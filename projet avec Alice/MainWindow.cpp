@@ -64,25 +64,32 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 
         case 10: // Embed message
         {
+            // Création d'un buffer
             wchar_t buffer[1024] = {};
-            HWND hEdit = CreateWindowEx(0, L"EDIT", L"",
+
+            // Boîte de dialogue Edit simple
+            HWND hEdit = CreateWindowEx(
+                0, L"EDIT", L"",
                 WS_OVERLAPPEDWINDOW | WS_VISIBLE | ES_LEFT | ES_AUTOHSCROLL,
-                100, 100, 300, 100, hwnd, nullptr, nullptr, nullptr);
+                100, 100, 400, 100, hwnd, nullptr, nullptr, nullptr
+            );
 
             if (hEdit)
             {
-                MessageBox(hwnd, L"Tapez votre message dans la petite fenêtre ouverte puis cliquez OK.", L"Info", MB_OK);
+                MessageBox(hwnd, L"Tapez votre message dans la petite fenêtre puis cliquez OK.", L"Info", MB_OK);
 
+                // Récupérer le texte
                 GetWindowText(hEdit, buffer, 1024);
-
                 DestroyWindow(hEdit);
 
+                // Conversion wstring -> string
                 std::wstring ws(buffer);
                 std::string msg(ws.begin(), ws.end());
 
+                // Embed le message
                 if (Steg::EmbedLSB(gImage, msg))
                 {
-                    InvalidateRect(hwnd, nullptr, TRUE);
+                    InvalidateRect(hwnd, nullptr, TRUE); // repaint
                     MessageBox(hwnd, L"Message intégré dans l'image !", L"Info", MB_OK);
                 }
                 else
@@ -94,12 +101,15 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         break;
 
 
+
         case 11: // Extract message
         {
             gExtractedMessage.clear();
             if (Steg::ExtractLSB(gImage, gExtractedMessage))
             {
-                InvalidateRect(hwnd, nullptr, TRUE); // repaint pour afficher le message sur l'image
+                // Afficher le message dans une boîte de dialogue
+                std::wstring wmsg(gExtractedMessage.begin(), gExtractedMessage.end());
+                MessageBox(hwnd, wmsg.c_str(), L"Message caché", MB_OK | MB_ICONINFORMATION);
             }
             else
             {
