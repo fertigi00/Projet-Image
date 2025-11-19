@@ -1,12 +1,12 @@
 #include <windows.h>
 #include "MainWindow.h"
-#include "ImageManager.h"//le message cacher dans les pixel an rgb en bineair 
+#include "ImageManager.h"//Maistre le zoom
 
 // Taille de la fenêtre
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) 
 {
     // Initialisation GDI+
     if (!InitGDIPlus())
@@ -60,6 +60,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     HMENU hStegMenu = CreateMenu();
     AppendMenu(hStegMenu, MF_STRING, 10, L"Embed message");
     AppendMenu(hStegMenu, MF_STRING, 11, L"Extract message");
+    AppendMenu(hStegMenu, MF_STRING, 12, L"Comparaison d'Images"); 
     AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hStegMenu, L"Steg");
 
     SetMenu(hwnd, hMenu);
