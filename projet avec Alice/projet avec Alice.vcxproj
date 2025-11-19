@@ -129,7 +129,7 @@
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="projet avec Alice.h" />
-    <ClInclude Include="RendererGDI.h" />
+    <ClInclude Include="RendererGDIPlus.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StegEngine.h" />
     <ClInclude Include="targetver.h" />
@@ -139,7 +139,7 @@
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="RendererGDI.cpp" />
+    <ClCompile Include="RendererGDIPlus.cpp" />
     <ClCompile Include="StegEngine.cpp" />
   </ItemGroup>
   <ItemGroup>

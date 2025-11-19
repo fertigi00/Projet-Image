@@ -1,405 +1,585 @@
-#include "MainWindow.h"
-#include "RendererGDI.h"
+Ôªø#include "MainWindow.h"
 #include "ImageManager.h"
-#include "StegEngine.h"  // pour EmbedLSB / ExtractLSB
-#include <windows.h>
+#include "RendererGDIPlus.h"
+#include "StegEngine.h"
+
 #include <string>
 
-// Image globale
-LoadedImage gImage = {}; // pixels vide, width/height = 0
-std::string gExtractedMessage; // message extrait ‡ afficher sur l'image
-// --- Fonction utilitaire pour conversion bits -> octets ---
-void BitsToBytes(const std::vector<uint8_t>& bits, std::vector<uint8_t>& bytes)
+// Donn√©es globales
+static LoadedImage gImage;
+static float       gZoomFactor = 1.0f;
+
+static const float ZOOM_STEP = 1.25f;
+static const float ZOOM_MIN = 0.1f;
+static const float ZOOM_MAX = 10.0f;
+
+// Panneau de saisie du message (affich√© seulement quand on cache un message)
+static HWND gMsgPanel = nullptr;
+static HWND gMsgEdit = nullptr;
+static HWND gMsgOk = nullptr;
+static HWND gMsgCancel = nullptr;
+
+// Hauteur du panneau
+static const int MSG_PANEL_HEIGHT = 140;
+
+// ---------------------------------------------------------
+// Utilitaires de conversion UTF-16 <-> UTF-8
+// ---------------------------------------------------------
+static std::string WStringToUTF8(const std::wstring& ws)
 {
-    bytes.clear();
-    size_t n = bits.size() / 8;
-    for (size_t i = 0; i < n; ++i)
-    {
-        uint8_t b = 0;
-        for (int j = 0; j < 8; ++j)
-        {
-            b <<= 1;
-            b |= (bits[i * 8 + j] & 1);
-        }
-        bytes.push_back(b);
-    }
+    if (ws.empty()) return {};
+
+    int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, ws.c_str(),
+        (int)ws.size(),
+        nullptr, 0, nullptr, nullptr);
+    if (sizeNeeded <= 0) return {};
+
+    std::string result(sizeNeeded, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, ws.c_str(), (int)ws.size(),
+        &result[0], sizeNeeded, nullptr, nullptr);
+    return result;
 }
 
-// --- Fonction de comparaison de deux images BMP 24 bits ---
-void CompareImages(const LoadedImage& imgA, const LoadedImage& imgB, HWND hwnd)
+static std::wstring UTF8ToWString(const std::string& s)
+{
+    if (s.empty()) return {};
+
+    int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, s.c_str(),
+        (int)s.size(), nullptr, 0);
+    if (sizeNeeded <= 0) return {};
+
+    std::wstring result(sizeNeeded, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, s.c_str(),
+        (int)s.size(), &result[0], sizeNeeded);
+    return result;
+}
+
+// ---------------------------------------------------------
+// Calcule la zone o√π l‚Äôimage doit √™tre dessin√©e
+// (respect du ratio + zoom + panel optionnel en bas).
+// ---------------------------------------------------------
+static bool GetImageDrawRect(HWND hwnd, RECT& outRect)
+{
+    if (gImage.width <= 0 || gImage.height <= 0)
+        return false;
+
+    RECT rcClient{};
+    GetClientRect(hwnd, &rcClient);
+
+    // Zone utilis√©e par l'image (si le panneau est visible, on le laisse en bas).
+    RECT rcImgArea = rcClient;
+
+    if (gMsgPanel && IsWindowVisible(gMsgPanel))
+        rcImgArea.bottom -= MSG_PANEL_HEIGHT;
+
+    int areaW = rcImgArea.right - rcImgArea.left;
+    int areaH = rcImgArea.bottom - rcImgArea.top;
+
+    if (areaW <= 0 || areaH <= 0)
+        return false;
+
+    float scaleX = (float)areaW / gImage.width;
+    float scaleY = (float)areaH / gImage.height;
+    float baseScale = (scaleX < scaleY) ? scaleX : scaleY;
+
+    float finalScale = baseScale * gZoomFactor;
+
+    int drawW = (int)(gImage.width * finalScale);
+    int drawH = (int)(gImage.height * finalScale);
+
+    outRect.left = rcImgArea.left + (areaW - drawW) / 2;
+    outRect.top = rcImgArea.top + (areaH - drawH) / 2;
+    outRect.right = outRect.left + drawW;
+    outRect.bottom = outRect.top + drawH;
+
+    return true;
+}
+
+// ---------------------------------------------------------
+// Zoom
+// ---------------------------------------------------------
+static void ZoomIn(HWND hwnd)
+{
+    gZoomFactor *= ZOOM_STEP;
+    if (gZoomFactor > ZOOM_MAX) gZoomFactor = ZOOM_MAX;
+    InvalidateRect(hwnd, nullptr, TRUE);
+}
+
+static void ZoomOut(HWND hwnd)
+{
+    gZoomFactor /= ZOOM_STEP;
+    if (gZoomFactor < ZOOM_MIN) gZoomFactor = ZOOM_MIN;
+    InvalidateRect(hwnd, nullptr, TRUE);
+}
+
+static void ZoomReset(HWND hwnd)
+{
+    gZoomFactor = 1.0f;
+    InvalidateRect(hwnd, nullptr, TRUE);
+}
+
+// ---------------------------------------------------------
+// Comparaison de deux images + cr√©ation d'image de diff√©rence
+// ---------------------------------------------------------
+static void CompareImagesAndDiff(const LoadedImage& imgA, const LoadedImage& imgB, HWND hwnd)
 {
     if (imgA.width != imgB.width || imgA.height != imgB.height)
     {
-        MessageBox(hwnd, L"Les images n'ont pas la mÍme taille. Comparaison impossible.", L"Erreur", MB_OK | MB_ICONERROR);
+        MessageBox(hwnd, L"Les images n'ont pas la m√™me taille.", L"Comparaison", MB_OK | MB_ICONERROR);
         return;
     }
 
     if (imgA.pixels.empty() || imgB.pixels.empty())
     {
-        MessageBox(hwnd, L"Une des images est vide.", L"Erreur", MB_OK | MB_ICONERROR);
+        MessageBox(hwnd, L"Une des images est vide.", L"Comparaison", MB_OK | MB_ICONERROR);
         return;
     }
 
-    size_t totalPixels = imgA.width * imgA.height;
-    size_t pixelsModified = 0;
-    size_t channelsModified = 0;
-    size_t lsbModified = 0;
+    size_t totalPixels = (size_t)imgA.width * imgA.height;
+    size_t pixelsDiff = 0;
+    size_t channelsDiff = 0;
 
     for (size_t i = 0; i < totalPixels; ++i)
     {
-        const uint8_t* pxA = &imgA.pixels[i * 4]; // 4 bytes per pixel RGBA
-        const uint8_t* pxB = &imgB.pixels[i * 4];
+        const uint8_t* pA = &imgA.pixels[i * 4];
+        const uint8_t* pB = &imgB.pixels[i * 4];
 
         bool pixelChanged = false;
-
-        // Comparaison stricte (B, G, R)
         for (int c = 0; c < 3; ++c)
         {
-            if (pxA[c] != pxB[c])
+            if (pA[c] != pB[c])
             {
                 pixelChanged = true;
-                channelsModified++;
+                ++channelsDiff;
             }
-
-            // Comparaison LSB
-            if ((pxA[c] & 1) != (pxB[c] & 1))
-                lsbModified++;
         }
-
-        if (pixelChanged)
-            pixelsModified++;
+        if (pixelChanged) ++pixelsDiff;
     }
 
-    // Affichage du verdict
-    wchar_t buffer[512];
-    if (pixelsModified == 0)
-        swprintf_s(buffer, L"Aucune diffÈrence dÈtectÈe.\nPixels modifiÈs: 0\nCanaux modifiÈs: 0\nBits LSB modifiÈs: %zu", lsbModified);
-    else
-        swprintf_s(buffer, L"DiffÈrences dÈtectÈes :\nPixels modifiÈs: %zu\nCanaux modifiÈs: %zu\nBits LSB modifiÈs: %zu",
-            pixelsModified, channelsModified, lsbModified);
+    wchar_t buffer[256];
+    swprintf_s(buffer, L"Pixels diff√©rents : %zu\nCanaux diff√©rents : %zu",
+        pixelsDiff, channelsDiff);
+    MessageBox(hwnd, buffer, L"Comparaison d'images", MB_OK | MB_ICONINFORMATION);
 
-    MessageBox(hwnd, buffer, L"RÈsultat de la comparaison", MB_OK | MB_ICONINFORMATION);
-}
-// GÈnËre une image de diffÈrence visuelle entre imgA et imgB
-LoadedImage CreateDifferenceImage(const LoadedImage& imgA, const LoadedImage& imgB)
-{
-    LoadedImage diff = imgA; // mÍme dimensions
-    size_t pixels = imgA.width * imgA.height;
+    // Image de diff√©rence rouge/noir
+    LoadedImage diff;
+    diff.width = imgA.width;
+    diff.height = imgA.height;
+    diff.pixels.resize(diff.width * diff.height * 4);
 
-    for (size_t i = 0; i < pixels; i++)
+    for (int y = 0; y < diff.height; ++y)
     {
-        const uint8_t* pxA = &imgA.pixels[i * 4]; // B,G,R,A
-        const uint8_t* pxB = &imgB.pixels[i * 4];
-        uint8_t* pxD = &diff.pixels[i * 4];
+        for (int x = 0; x < diff.width; ++x)
+        {
+            int idx = (y * diff.width + x) * 4;
 
-        if (pxA[0] == pxB[0] && pxA[1] == pxB[1] && pxA[2] == pxB[2])
-        {
-            // pixel identique -> noir
-            pxD[0] = 0; // B
-            pxD[1] = 0; // G
-            pxD[2] = 0; // R
+            const uint8_t* pA = &imgA.pixels[idx];
+            const uint8_t* pB = &imgB.pixels[idx];
+            uint8_t* pD = &diff.pixels[idx];
+
+            bool same = (pA[0] == pB[0] && pA[1] == pB[1] && pA[2] == pB[2]);
+
+            if (same)
+            {
+                pD[0] = pD[1] = pD[2] = 0;
+            }
+            else
+            {
+                pD[0] = 0;
+                pD[1] = 0;
+                pD[2] = 255;
+            }
+            pD[3] = 255;
         }
-        else
-        {
-            // pixel diffÈrent -> rouge
-            pxD[0] = 0;   // B
-            pxD[1] = 0;   // G
-            pxD[2] = 255; // R
-        }
-        pxD[3] = 255; // alpha plein
     }
 
-    return diff;
+    // Sauvegarde de l'image de diff√©rence
+    OPENFILENAME ofn{};
+    wchar_t fileName[MAX_PATH] = {};
+
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFile = fileName;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = L"Image BMP\0*.bmp\0";
+    ofn.nFilterIndex = 1;
+    ofn.Flags = OFN_OVERWRITEPROMPT;
+
+    if (GetSaveFileName(&ofn))
+    {
+        if (SaveImageAny(ofn.lpstrFile, diff))
+            MessageBox(hwnd, L"Image de diff√©rence sauvegard√©e.", L"OK", MB_OK | MB_ICONINFORMATION);
+        else
+            MessageBox(hwnd, L"Erreur lors de la sauvegarde de l'image de diff√©rence.", L"Erreur", MB_OK | MB_ICONERROR);
+    }
 }
 
+// ---------------------------------------------------------
+// Affichage / masquage du panneau de message
+// ---------------------------------------------------------
+static void ShowMessagePanel(HWND hwnd, bool show)
+{
+    if (!gMsgPanel)
+        return;
 
+    ShowWindow(gMsgPanel, show ? SW_SHOWNA : SW_HIDE);
+    ShowWindow(gMsgEdit, show ? SW_SHOWNA : SW_HIDE);
+    ShowWindow(gMsgOk, show ? SW_SHOWNA : SW_HIDE);
+    ShowWindow(gMsgCancel, show ? SW_SHOWNA : SW_HIDE);
+
+    if (show)
+        SetFocus(gMsgEdit);
+
+    InvalidateRect(hwnd, nullptr, TRUE);
+}
+
+// ---------------------------------------------------------
+// Proc√©dure de la fen√™tre principale
+// ---------------------------------------------------------
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
+    case WM_CREATE:
+    {
+        RECT rc{};
+        GetClientRect(hwnd, &rc);
+
+        int width = rc.right - rc.left;
+        int height = rc.bottom - rc.top;
+
+        // Cr√©ation du panneau de message (invisible au d√©part)
+        gMsgPanel = CreateWindowEx(
+            0,
+            L"STATIC",
+            nullptr,
+            WS_CHILD | WS_VISIBLE | SS_LEFT,
+            0,
+            height - MSG_PANEL_HEIGHT,
+            width,
+            MSG_PANEL_HEIGHT,
+            hwnd,
+            (HMENU)ID_MSG_PANEL,
+            GetModuleHandle(nullptr),
+            nullptr
+        );
+
+        // Couleur grise de fond
+        SendMessage(gMsgPanel, WM_SETTEXT, 0, (LPARAM)L"");
+
+        gMsgEdit = CreateWindowEx(
+            WS_EX_CLIENTEDGE,
+            L"EDIT",
+            nullptr,
+            WS_CHILD | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
+            10,
+            10,
+            width - 20,
+            MSG_PANEL_HEIGHT - 50,
+            hwnd,
+            (HMENU)ID_MSG_EDIT,
+            GetModuleHandle(nullptr),
+            nullptr
+        );
+
+        gMsgOk = CreateWindow(
+            L"BUTTON",
+            L"Cacher le message",
+            WS_CHILD,
+            10,
+            MSG_PANEL_HEIGHT - 35,
+            140,
+            25,
+            hwnd,
+            (HMENU)ID_MSG_OK,
+            GetModuleHandle(nullptr),
+            nullptr
+        );
+
+        gMsgCancel = CreateWindow(
+            L"BUTTON",
+            L"Annuler",
+            WS_CHILD,
+            160,
+            MSG_PANEL_HEIGHT - 35,
+            80,
+            25,
+            hwnd,
+            (HMENU)ID_MSG_CANCEL,
+            GetModuleHandle(nullptr),
+            nullptr
+        );
+
+        // Masquer au d√©part
+        ShowMessagePanel(hwnd, false);
+    }
+    return 0;
+
+    case WM_SIZE:
+    {
+        int width = LOWORD(lParam);
+        int height = HIWORD(lParam);
+
+        if (gMsgPanel)
+        {
+            MoveWindow(gMsgPanel, 0, height - MSG_PANEL_HEIGHT, width, MSG_PANEL_HEIGHT, TRUE);
+        }
+        if (gMsgEdit)
+        {
+            MoveWindow(gMsgEdit, 10, height - MSG_PANEL_HEIGHT + 10, width - 20, MSG_PANEL_HEIGHT - 50, TRUE);
+        }
+        if (gMsgOk)
+        {
+            MoveWindow(gMsgOk, 10, height - 35, 140, 25, TRUE);
+        }
+        if (gMsgCancel)
+        {
+            MoveWindow(gMsgCancel, 160, height - 35, 80, 25, TRUE);
+        }
+
+        InvalidateRect(hwnd, nullptr, TRUE);
+    }
+    return 0;
+
     case WM_COMMAND:
     {
-        switch (LOWORD(wParam))
+        const int id = LOWORD(wParam);
+
+        // Boutons du panneau
+        if (id == ID_MSG_OK)
         {
-        case 1: // Open image
+            if (gImage.pixels.empty())
+            {
+                MessageBox(hwnd, L"Aucune image charg√©e.", L"St√©ganographie", MB_OK | MB_ICONINFORMATION);
+                return 0;
+            }
+
+            int len = GetWindowTextLengthW(gMsgEdit);
+            if (len <= 0)
+            {
+                MessageBox(hwnd, L"Veuillez entrer un message.", L"St√©ganographie", MB_OK | MB_ICONINFORMATION);
+                return 0;
+            }
+
+            std::wstring ws;
+            ws.resize(len + 1);
+            GetWindowTextW(gMsgEdit, &ws[0], len + 1);
+            ws.resize(len); // enlever le '\0'
+
+            std::string msg = WStringToUTF8(ws);
+
+            if (Steg::EmbedLSB(gImage, msg))
+            {
+                MessageBox(hwnd, L"Message cach√© dans l'image.", L"St√©ganographie", MB_OK | MB_ICONINFORMATION);
+                ShowMessagePanel(hwnd, false);
+            }
+            else
+            {
+                MessageBox(hwnd, L"Message trop long pour cette image.", L"St√©ganographie", MB_OK | MB_ICONERROR);
+            }
+            return 0;
+        }
+        else if (id == ID_MSG_CANCEL)
         {
-            OPENFILENAME ofn = {};
-            wchar_t szFile[MAX_PATH] = {};
+            ShowMessagePanel(hwnd, false);
+            return 0;
+        }
+
+        // Menus
+        switch (id)
+        {
+        case ID_FILE_OPEN:
+        {
+            OPENFILENAME ofn{};
+            wchar_t fileName[MAX_PATH] = {};
 
             ofn.lStructSize = sizeof(ofn);
             ofn.hwndOwner = hwnd;
-            ofn.lpstrFile = szFile;
+            ofn.lpstrFile = fileName;
             ofn.nMaxFile = MAX_PATH;
-            ofn.lpstrFilter = L"BMP Files\0*.bmp\0All Files\0*.*\0";
+            ofn.lpstrFilter = L"Images (*.bmp; *.png; *.jpg; *.jpeg)\0*.bmp;*.png;*.jpg;*.jpeg\0Tous les fichiers (*.*)\0*.*\0";
+            ofn.nFilterIndex = 1;
             ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
             if (GetOpenFileName(&ofn))
             {
-                if (LoadBMPGDIPlus(ofn.lpstrFile, gImage))
-                    InvalidateRect(hwnd, nullptr, TRUE);
+                LoadedImage img;
+                if (LoadImageAny(ofn.lpstrFile, img))
+                {
+                    gImage = std::move(img);
+                    ZoomReset(hwnd);
+                }
                 else
-                    MessageBox(hwnd, L"Failed to load image.", L"Error", MB_OK | MB_ICONERROR);
+                {
+                    MessageBox(hwnd, L"√âchec du chargement de l'image.", L"Erreur", MB_OK | MB_ICONERROR);
+                }
             }
         }
-        break;
+        return 0;
 
-        case 2: // Save image
+        case ID_FILE_SAVE:
         {
-            OPENFILENAME ofn = {};
-            wchar_t szFile[MAX_PATH] = {};
+            if (gImage.pixels.empty())
+            {
+                MessageBox(hwnd, L"Aucune image √† sauvegarder.", L"Sauvegarde", MB_OK | MB_ICONINFORMATION);
+                return 0;
+            }
+
+            OPENFILENAME ofn{};
+            wchar_t fileName[MAX_PATH] = {};
 
             ofn.lStructSize = sizeof(ofn);
             ofn.hwndOwner = hwnd;
-            ofn.lpstrFile = szFile;
+            ofn.lpstrFile = fileName;
             ofn.nMaxFile = MAX_PATH;
-            ofn.lpstrFilter = L"BMP Files\0*.bmp\0All Files\0*.*\0";
+            ofn.lpstrFilter =
+                L"PNG (*.png)\0*.png\0"
+                L"JPEG (*.jpg; *.jpeg)\0*.jpg;*.jpeg\0"
+                L"BMP (*.bmp)\0*.bmp\0";
+            ofn.nFilterIndex = 1;
             ofn.Flags = OFN_OVERWRITEPROMPT;
 
             if (GetSaveFileName(&ofn))
             {
-                // L'image contient dÈj‡ le message via EmbedLSB
-                if (!SaveBMPGDIPlus(ofn.lpstrFile, gImage))
-                    MessageBox(hwnd, L"Failed to save image.", L"Error", MB_OK | MB_ICONERROR);
+                if (SaveImageAny(ofn.lpstrFile, gImage))
+                    MessageBox(hwnd, L"Image sauvegard√©e.", L"Sauvegarde", MB_OK | MB_ICONINFORMATION);
                 else
-                    MessageBox(hwnd, L"Image sauvegardÈe avec le message cachÈ !", L"Info", MB_OK);
+                    MessageBox(hwnd, L"Erreur lors de la sauvegarde.", L"Erreur", MB_OK | MB_ICONERROR);
             }
         }
-        break;
+        return 0;
 
-        case 10: // Embed message
-        {
-            // CrÈation d'un buffer
-            wchar_t buffer[1024] = {};
+        case ID_FILE_EXIT:
+            PostQuitMessage(0);
+            return 0;
 
-            // BoÓte de dialogue Edit simple
-            HWND hEdit = CreateWindowEx(
-                0, L"EDIT", L"",
-                WS_OVERLAPPEDWINDOW | WS_VISIBLE | ES_LEFT | ES_AUTOHSCROLL,
-                100, 100, 400, 100, hwnd, nullptr, nullptr, nullptr
-            );
-
-            if (hEdit)
+        case ID_STEG_EMBED:
+            if (gImage.pixels.empty())
             {
-                MessageBox(hwnd, L"Tapez votre message dans la petite fenÍtre puis cliquez OK.", L"Info", MB_OK);
-
-                // RÈcupÈrer le texte
-                GetWindowText(hEdit, buffer, 1024);
-                DestroyWindow(hEdit);
-
-                // Conversion wstring -> string
-                std::wstring ws(buffer);
-                std::string msg(ws.begin(), ws.end());
-
-                // Embed le message
-                if (Steg::EmbedLSB(gImage, msg))
-                {
-                    InvalidateRect(hwnd, nullptr, TRUE); // repaint
-                    MessageBox(hwnd, L"Message intÈgrÈ dans l'image !", L"Info", MB_OK);
-                }
-                else
-                {
-                    MessageBox(hwnd, L"Message trop long pour cette image!", L"Erreur", MB_OK | MB_ICONERROR);
-                }
-            }
-        }
-        break;
-
-
-
-        // --- case 11: Extract message ---
-        case 11:
-        {
-            gExtractedMessage.clear();
-
-            std::string tmpMsg;
-            bool result = Steg::ExtractLSB(gImage, tmpMsg);
-
-            if (result)
-            {
-                // Extraction OK, afficher le message
-                gExtractedMessage = tmpMsg;
-                std::wstring wmsg(gExtractedMessage.begin(), gExtractedMessage.end());
-                MessageBox(hwnd, wmsg.c_str(), L"Message cachÈ", MB_OK | MB_ICONINFORMATION);
+                MessageBox(hwnd, L"Aucune image charg√©e.", L"St√©ganographie", MB_OK | MB_ICONINFORMATION);
             }
             else
             {
-                // Extraction ÈchouÈe : vÈrifier pourquoi
-                size_t pixels = gImage.width * gImage.height;
-                std::vector<uint8_t> bits;
+                // Afficher le panneau de saisie
+                SetWindowTextW(gMsgEdit, L"");
+                ShowMessagePanel(hwnd, true);
+            }
+            return 0;
 
-                for (size_t i = 0; i < pixels; i++) {
-                    const uint8_t* px = &gImage.pixels[i * 4];
-                    bits.push_back(px[0] & 1);
-                    bits.push_back(px[1] & 1);
-                    bits.push_back(px[2] & 1);
-                }
+        case ID_STEG_EXTRACT:
+        {
+            if (gImage.pixels.empty())
+            {
+                MessageBox(hwnd, L"Aucune image charg√©e.", L"St√©ganographie", MB_OK | MB_ICONINFORMATION);
+                return 0;
+            }
 
-                if (bits.size() < 18 * 8) {
-                    MessageBox(hwnd, L"Image trop petite pour contenir un message.", L"Erreur", MB_OK | MB_ICONERROR);
-                    break;
-                }
-
-                std::vector<uint8_t> headerBytes;
-                BitsToBytes(std::vector<uint8_t>(bits.begin(), bits.begin() + 18 * 8), headerBytes);
-
-                // VÈrifier MAGIC
-                uint32_t magic = (headerBytes[0] << 24) | (headerBytes[1] << 16) | (headerBytes[2] << 8) | headerBytes[3];
-                if (magic != Steg::MAGIC) {
-                    MessageBox(hwnd, L"Message corrompu : magic invalide.", L"Erreur", MB_OK | MB_ICONERROR);
-                    break;
-                }
-
-                // VÈrifier longueur
-                uint32_t length = (headerBytes[4] << 24) | (headerBytes[5] << 16) | (headerBytes[6] << 8) | headerBytes[7];
-                if (length == 0 || 12 + length > (bits.size() / 8)) {
-                    MessageBox(hwnd, L"Message corrompu : longueur invalide.", L"Erreur", MB_OK | MB_ICONERROR);
-                    break;
-                }
-
-                // VÈrifier CRC32
-                uint32_t crcStored = (headerBytes[8] << 24) | (headerBytes[9] << 16) | (headerBytes[10] << 8) | headerBytes[11];
-                std::vector<uint8_t> msgBytes;
-                BitsToBytes(std::vector<uint8_t>(bits.begin() + 96, bits.begin() + 96 + length * 8), msgBytes);
-                uint32_t crcCalc = Steg::ComputeCRC32(msgBytes.data(), msgBytes.size());
-
-                if (crcCalc != crcStored) {
-                    MessageBox(hwnd, L"Message corrompu : CRC invalide.", L"Erreur", MB_OK | MB_ICONERROR);
-                }
-                else {
-                    MessageBox(hwnd, L"Message introuvable ou fichier modifiÈ.", L"Info", MB_OK);
-                }
+            std::string msg;
+            if (Steg::ExtractLSB(gImage, msg))
+            {
+                std::wstring wmsg = UTF8ToWString(msg);
+                MessageBox(hwnd, wmsg.c_str(), L"Message cach√© trouv√©", MB_OK | MB_ICONINFORMATION);
+            }
+            else
+            {
+                MessageBox(hwnd, L"Aucun message cach√© trouv√©.", L"St√©ganographie", MB_OK | MB_ICONINFORMATION);
             }
         }
-        break;
-        case 12: // Comparaison d'Images
+        return 0;
+
+        case ID_STEG_COMPARE:
         {
-            OPENFILENAME ofnA = {};
-            wchar_t szFileA[MAX_PATH] = {};
+            OPENFILENAME ofnA{};
+            wchar_t fileA[MAX_PATH] = {};
             ofnA.lStructSize = sizeof(ofnA);
             ofnA.hwndOwner = hwnd;
-            ofnA.lpstrFile = szFileA;
+            ofnA.lpstrFile = fileA;
             ofnA.nMaxFile = MAX_PATH;
-            ofnA.lpstrFilter = L"BMP Files\0*.bmp\0All Files\0*.*\0";
-            ofnA.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+            ofnA.lpstrFilter = L"Image BMP\0*.bmp\0";
+            ofnA.nFilterIndex = 1;
+            ofnA.Flags = OFN_FILEMUSTEXIST;
 
             if (!GetOpenFileName(&ofnA))
-                break; // AnnulÈ
+                return 0;
 
-            OPENFILENAME ofnB = {};
-            wchar_t szFileB[MAX_PATH] = {};
+            OPENFILENAME ofnB{};
+            wchar_t fileB[MAX_PATH] = {};
             ofnB.lStructSize = sizeof(ofnB);
             ofnB.hwndOwner = hwnd;
-            ofnB.lpstrFile = szFileB;
+            ofnB.lpstrFile = fileB;
             ofnB.nMaxFile = MAX_PATH;
-            ofnB.lpstrFilter = L"BMP Files\0*.bmp\0All Files\0*.*\0";
-            ofnB.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+            ofnB.lpstrFilter = L"Image BMP\0*.bmp\0";
+            ofnB.nFilterIndex = 1;
+            ofnB.Flags = OFN_FILEMUSTEXIST;
 
             if (!GetOpenFileName(&ofnB))
-                break; // AnnulÈ
+                return 0;
 
-            LoadedImage imgA = {};
-            LoadedImage imgB = {};
-
-            if (!LoadBMPGDIPlus(ofnA.lpstrFile, imgA))
+            LoadedImage imgA, imgB;
+            if (!LoadImageAny(ofnA.lpstrFile, imgA) ||
+                !LoadImageAny(ofnB.lpstrFile, imgB))
             {
-                MessageBox(hwnd, L"Impossible de charger l'image A.", L"Erreur", MB_OK | MB_ICONERROR);
-                break;
+                MessageBox(hwnd, L"Impossible de charger les images.", L"Comparaison", MB_OK | MB_ICONERROR);
+                return 0;
             }
 
-            if (!LoadBMPGDIPlus(ofnB.lpstrFile, imgB))
-            {
-                MessageBox(hwnd, L"Impossible de charger l'image B.", L"Erreur", MB_OK | MB_ICONERROR);
-                break;
-            }
-            // Appel de la fonction de comparaison
-            CompareImages(imgA, imgB, hwnd);
-
-            // --- BONUS : image de diffÈrence visuelle ---
-            LoadedImage diffImage = CreateDifferenceImage(imgA, imgB);
-
-            // BoÓte de dialogue pour sauvegarder l'image de diffÈrence
-            OPENFILENAME ofnSave = {};
-            wchar_t szFileDiff[MAX_PATH] = {};
-            ofnSave.lStructSize = sizeof(ofnSave);
-            ofnSave.hwndOwner = hwnd;
-            ofnSave.lpstrFile = szFileDiff;
-            ofnSave.nMaxFile = MAX_PATH;
-            ofnSave.lpstrFilter = L"BMP Files\0*.bmp\0All Files\0*.*\0";
-            ofnSave.Flags = OFN_OVERWRITEPROMPT;
-
-            if (GetSaveFileName(&ofnSave))
-            {
-                if (SaveBMPGDIPlus(ofnSave.lpstrFile, diffImage))
-                    MessageBox(hwnd, L"Image de diffÈrence sauvegardÈe !", L"Info", MB_OK);
-                else
-                    MessageBox(hwnd, L"Impossible de sauvegarder l'image de diffÈrence.", L"Erreur", MB_OK | MB_ICONERROR);
-            }
-
+            CompareImagesAndDiff(imgA, imgB, hwnd);
         }
-        break;
+        return 0;
 
+        case ID_VIEW_ZOOM_IN:
+            ZoomIn(hwnd);
+            return 0;
 
-        case 99: // Quit
-            PostQuitMessage(0);
-            break;
+        case ID_VIEW_ZOOM_OUT:
+            ZoomOut(hwnd);
+            return 0;
+
+        case ID_VIEW_ZOOM_RESET:
+            ZoomReset(hwnd);
+            return 0;
         }
     }
-    break;
+    return 0;
 
-    break;
+    case WM_LBUTTONDOWN:
+        ZoomIn(hwnd);
+        return 0;
+
+    case WM_RBUTTONDOWN:
+        ZoomOut(hwnd);
+        return 0;
+
+    case WM_MOUSEWHEEL:
+    {
+        int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+        if (delta > 0) ZoomIn(hwnd);
+        else if (delta < 0) ZoomOut(hwnd);
+    }
+    return 0;
 
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-
         if (!gImage.pixels.empty())
         {
-            int imgW = gImage.width;
-            int imgH = gImage.height;
-            int winW = rc.right - rc.left;
-            int winH = rc.bottom - rc.top;
-
-            float scaleX = (float)winW / imgW;
-            float scaleY = (float)winH / imgH;
-            float scale = (scaleX < scaleY) ? scaleX : scaleY;
-
-            int drawW = (int)(imgW * scale);
-            int drawH = (int)(imgH * scale);
-
-            RECT drawRect;
-            drawRect.left = (winW - drawW) / 2;
-            drawRect.top = (winH - drawH) / 2;
-            drawRect.right = drawRect.left + drawW;
-            drawRect.bottom = drawRect.top + drawH;
-
-            RenderImageGDI(hdc, drawRect, &gImage);
-
-            // Affichage du message extrait sur l'image
-            if (!gExtractedMessage.empty())
+            RECT rcDraw{};
+            if (GetImageDrawRect(hwnd, rcDraw))
             {
-                SetBkMode(hdc, TRANSPARENT);
-                SetTextColor(hdc, RGB(255, 0, 0)); // texte rouge
-                DrawTextA(hdc, gExtractedMessage.c_str(), -1, &drawRect, DT_CENTER | DT_TOP | DT_WORDBREAK);
+                RenderImageGDIPlus(hdc, rcDraw, gImage);
             }
         }
 
         EndPaint(hwnd, &ps);
     }
-    break;
+    return 0;
 
     case WM_DESTROY:
-        gImage.pixels.clear();
-        gImage.width = 0;
-        gImage.height = 0;
         PostQuitMessage(0);
-        break;
-
-    default:
-        return DefWindowProc(hwnd, msg, wParam, lParam);
+        return 0;
     }
-    return 0;
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
 }

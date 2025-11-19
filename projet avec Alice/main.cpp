@@ -1,42 +1,47 @@
 #include <windows.h>
 #include "MainWindow.h"
-#include "ImageManager.h"//Maistre le zoom
+#include "ImageManager.h"
 
-// Taille de la fenêtre
-#define WIN_WIDTH 800
-#define WIN_HEIGHT 600
+#define WIN_WIDTH  900
+#define WIN_HEIGHT 700
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) 
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPWSTR    lpCmdLine,
+    _In_ int       nCmdShow)
 {
-    // Initialisation GDI+
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+
     if (!InitGDIPlus())
     {
-        MessageBox(nullptr, L"Failed to initialize GDI+", L"Error", MB_OK | MB_ICONERROR);
+        MessageBox(nullptr, L"Échec de l'initialisation de GDI+.", L"Erreur", MB_OK | MB_ICONERROR);
         return -1;
     }
 
-    // Classe de fenêtre
-    WNDCLASS wc = {};
+    WNDCLASS wc{};
     wc.lpfnWndProc = MainWindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = L"StegWindow";
+    wc.lpszClassName = L"StegWindowClass";
     wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 
     if (!RegisterClass(&wc))
     {
-        MessageBox(nullptr, L"Failed to register window class", L"Error", MB_OK | MB_ICONERROR);
+        MessageBox(nullptr, L"Échec de l'enregistrement de la classe de fenêtre.", L"Erreur", MB_OK | MB_ICONERROR);
+        ShutdownGDIPlus();
         return -1;
     }
 
-    // Création de la fenêtre principale
     HWND hwnd = CreateWindowEx(
         0,
         wc.lpszClassName,
-        L"Steganography App",
+        L"Projet Image",
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        WIN_WIDTH, WIN_HEIGHT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        WIN_WIDTH,
+        WIN_HEIGHT,
         nullptr,
         nullptr,
         hInstance,
@@ -45,39 +50,46 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
     if (!hwnd)
     {
-        MessageBox(nullptr, L"Failed to create window", L"Error", MB_OK | MB_ICONERROR);
+        MessageBox(nullptr, L"Échec de la création de la fenêtre.", L"Erreur", MB_OK | MB_ICONERROR);
+        ShutdownGDIPlus();
         return -1;
     }
 
     // Menu
-    HMENU hMenu = CreateMenu();
+    HMENU hMenuBar = CreateMenu();
+
     HMENU hFileMenu = CreateMenu();
-    AppendMenu(hFileMenu, MF_STRING, 1, L"Open image");
-    AppendMenu(hFileMenu, MF_STRING, 2, L"Save image");
-    AppendMenu(hFileMenu, MF_STRING, 99, L"Quit");
-    AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, L"File");
+    AppendMenu(hFileMenu, MF_STRING, ID_FILE_OPEN, L"&Ouvrir une image...");
+    AppendMenu(hFileMenu, MF_STRING, ID_FILE_SAVE, L"&Sauvegarder l'image...");
+    AppendMenu(hFileMenu, MF_SEPARATOR, 0, nullptr);
+    AppendMenu(hFileMenu, MF_STRING, ID_FILE_EXIT, L"&Quitter");
 
     HMENU hStegMenu = CreateMenu();
-    AppendMenu(hStegMenu, MF_STRING, 10, L"Embed message");
-    AppendMenu(hStegMenu, MF_STRING, 11, L"Extract message");
-    AppendMenu(hStegMenu, MF_STRING, 12, L"Comparaison d'Images"); 
-    AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hStegMenu, L"Steg");
+    AppendMenu(hStegMenu, MF_STRING, ID_STEG_EMBED, L"&Cacher un message...");
+    AppendMenu(hStegMenu, MF_STRING, ID_STEG_EXTRACT, L"&Extraire le message");
+    AppendMenu(hStegMenu, MF_STRING, ID_STEG_COMPARE, L"&Comparer deux images...");
 
-    SetMenu(hwnd, hMenu);
+    HMENU hViewMenu = CreateMenu();
+    AppendMenu(hViewMenu, MF_STRING, ID_VIEW_ZOOM_IN, L"Zoom &avant");
+    AppendMenu(hViewMenu, MF_STRING, ID_VIEW_ZOOM_OUT, L"Zoom a&rrière");
+    AppendMenu(hViewMenu, MF_STRING, ID_VIEW_ZOOM_RESET, L"&Réinitialiser le zoom");
+
+    AppendMenu(hMenuBar, MF_POPUP, (UINT_PTR)hFileMenu, L"&Fichier");
+    AppendMenu(hMenuBar, MF_POPUP, (UINT_PTR)hStegMenu, L"&Stéganographie");
+    AppendMenu(hMenuBar, MF_POPUP, (UINT_PTR)hViewMenu, L"&Affichage");
+
+    SetMenu(hwnd, hMenuBar);
 
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
-    // Boucle de messages
-    MSG msg = {};
+    MSG msg{};
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
 
-    // Libération GDI+
     ShutdownGDIPlus();
-
     return (int)msg.wParam;
 }

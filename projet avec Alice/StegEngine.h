@@ -1,27 +1,15 @@
 #pragma once
-#include <windows.h>
-#include <stdint.h>
+
 #include <string>
-#include <vector>
 #include "ImageManager.h"
+
+// Format : [4 octets MAGIC][4 octets LENGTH][LENGTH octets message]
+// MAGIC = 0x53544547 ("STEG")
 
 namespace Steg
 {
-    // Alias LSB pour compatibilité
-    bool EmbedMaster(LoadedImage& img, const std::string& msg);
-    bool ExtractMaster(const LoadedImage& img, std::string& outMsg);
+    constexpr unsigned int MAGIC = 0x53544547u;
 
-    inline bool EmbedLSB(LoadedImage& img, const std::string& msg) {
-        return EmbedMaster(img, msg);
-    }
-
-    inline bool ExtractLSB(const LoadedImage& img, std::string& outMsg) {
-        return ExtractMaster(img, outMsg);
-    }
-
-    // CRC32
-    uint32_t ComputeCRC32(const uint8_t* data, size_t len);
-
-    // MAGIC header
-    static const uint32_t MAGIC = 0x4D534747; // "MSGG"
+    bool EmbedLSB(LoadedImage& img, const std::string& message);
+    bool ExtractLSB(const LoadedImage& img, std::string& outMessage);
 }
