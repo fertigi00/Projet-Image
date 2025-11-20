@@ -489,32 +489,39 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 
         case ID_STEG_COMPARE:
         {
+            // --- Image A ---
             OPENFILENAME ofnA{};
             wchar_t fileA[MAX_PATH] = {};
             ofnA.lStructSize = sizeof(ofnA);
             ofnA.hwndOwner = hwnd;
             ofnA.lpstrFile = fileA;
             ofnA.nMaxFile = MAX_PATH;
-            ofnA.lpstrFilter = L"Image BMP\0*.bmp\0";
+            ofnA.lpstrFilter =
+                L"Images (*.bmp; *.png; *.jpg; *.jpeg)\0*.bmp;*.png;*.jpg;*.jpeg\0"
+                L"Tous les fichiers (*.*)\0*.*\0";
             ofnA.nFilterIndex = 1;
             ofnA.Flags = OFN_FILEMUSTEXIST;
 
             if (!GetOpenFileName(&ofnA))
                 return 0;
 
+            // --- Image B ---
             OPENFILENAME ofnB{};
             wchar_t fileB[MAX_PATH] = {};
             ofnB.lStructSize = sizeof(ofnB);
             ofnB.hwndOwner = hwnd;
             ofnB.lpstrFile = fileB;
             ofnB.nMaxFile = MAX_PATH;
-            ofnB.lpstrFilter = L"Image BMP\0*.bmp\0";
+            ofnB.lpstrFilter =
+                L"Images (*.bmp; *.png; *.jpg; *.jpeg)\0*.bmp;*.png;*.jpg;*.jpeg\0"
+                L"Tous les fichiers (*.*)\0*.*\0";
             ofnB.nFilterIndex = 1;
             ofnB.Flags = OFN_FILEMUSTEXIST;
 
             if (!GetOpenFileName(&ofnB))
                 return 0;
 
+            // --- Charger ---
             LoadedImage imgA, imgB;
             if (!LoadImageAny(ofnA.lpstrFile, imgA) ||
                 !LoadImageAny(ofnB.lpstrFile, imgB))
@@ -526,6 +533,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             CompareImagesAndDiff(imgA, imgB, hwnd);
         }
         return 0;
+
 
         case ID_VIEW_ZOOM_IN:
             ZoomIn(hwnd);

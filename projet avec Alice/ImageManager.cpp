@@ -59,6 +59,8 @@ bool LoadBMP(const wchar_t* path, LoadedImage& outImg)
     {
         uint8_t* src = reinterpret_cast<uint8_t*>(data.Scan0) + y * data.Stride;
         uint8_t* dst = outImg.pixels.data() + y * w * 4;
+        if (!src || !dst)
+            continue;
         memcpy(dst, src, w * 4);
     }
 
@@ -86,6 +88,8 @@ bool SaveBMP(const wchar_t* path, const LoadedImage& img)
     {
         uint8_t* dst = reinterpret_cast<uint8_t*>(data.Scan0) + y * data.Stride;
         const uint8_t* src = img.pixels.data() + y * img.width * 4;
+        if (!src || !dst)
+            continue;
         memcpy(dst, src, img.width * 4);
     }
 
@@ -150,6 +154,8 @@ bool LoadImageAny(const wchar_t* path, LoadedImage& outImg)
     {
         uint8_t* dst = outImg.pixels.data() + y * w * 4;
         uint8_t* src = (uint8_t*)data.Scan0 + y * data.Stride;
+        if (!src || !dst)
+            continue;
         memcpy(dst, src, w * 4);
     }
 
@@ -180,6 +186,8 @@ bool SaveImageAny(const wchar_t* path, const LoadedImage& img)
     {
         uint8_t* dst = (uint8_t*)data.Scan0 + y * data.Stride;
         const uint8_t* src = img.pixels.data() + y * img.width * 4;
+        if (!src || !dst)
+            continue;
         memcpy(dst, src, img.width * 4);
     }
 

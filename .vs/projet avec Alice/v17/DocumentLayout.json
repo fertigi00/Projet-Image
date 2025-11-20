@@ -1,49 +1,49 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\alice\\source\\repos\\Projet-Image\\",
+  "WorkspaceRootPath": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\MainWindow.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\RendererGDIPlus.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\RendererGDIPlus.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\ImageManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\ImageManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\StegEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\StegEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\MainWindow.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\Dialogs.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\ImageManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\MainWindow.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\RendererGDIPlus.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\StegEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\RendererGDIPlus.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\ImageManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\StegEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\MainWindow.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{03B042C6-F637-4B88-9A3D-331935DB7AD5}|projet avec Alice\\projet avec Alice.vcxproj|solutionrelative:projet avec Alice\\Dialogs.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -54,135 +54,139 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 11,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\main.cpp",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\main.cpp",
               "RelativeDocumentMoniker": "projet avec Alice\\main.cpp",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\main.cpp",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\main.cpp",
               "RelativeToolTip": "projet avec Alice\\main.cpp",
-              "ViewState": "AgIAACoAAAAAAAAAAAAAADsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:19:29.12Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "RendererGDIPlus.cpp",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.cpp",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.cpp",
               "RelativeDocumentMoniker": "projet avec Alice\\RendererGDIPlus.cpp",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.cpp",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.cpp",
               "RelativeToolTip": "projet avec Alice\\RendererGDIPlus.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-19T18:42:26.719Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "RendererGDIPlus.h",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.h",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.h",
               "RelativeDocumentMoniker": "projet avec Alice\\RendererGDIPlus.h",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.h",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\RendererGDIPlus.h",
               "RelativeToolTip": "projet avec Alice\\RendererGDIPlus.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-19T18:41:59.812Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-19T18:41:59.812Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "ImageManager.h",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.h",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.h",
               "RelativeDocumentMoniker": "projet avec Alice\\ImageManager.h",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.h",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.h",
               "RelativeToolTip": "projet avec Alice\\ImageManager.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-14T13:02:00.477Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T13:02:00.477Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "MainWindow.cpp",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.cpp",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.cpp",
               "RelativeDocumentMoniker": "projet avec Alice\\MainWindow.cpp",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.cpp",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.cpp",
               "RelativeToolTip": "projet avec Alice\\MainWindow.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEACAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAEACAAAAAAAAAAAAABcCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:18:56.662Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "ImageManager.cpp",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.cpp",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.cpp",
               "RelativeDocumentMoniker": "projet avec Alice\\ImageManager.cpp",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.cpp",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\ImageManager.cpp",
               "RelativeToolTip": "projet avec Alice\\ImageManager.cpp",
-              "ViewState": "AgIAAGcAAAAAAAAAAAAowOAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAAD8AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:02:25.41Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "StegEngine.cpp",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.cpp",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.cpp",
               "RelativeDocumentMoniker": "projet avec Alice\\StegEngine.cpp",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.cpp",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.cpp",
               "RelativeToolTip": "projet avec Alice\\StegEngine.cpp",
-              "ViewState": "AgIAAI0AAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:09:01.776Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "StegEngine.h",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.h",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.h",
               "RelativeDocumentMoniker": "projet avec Alice\\StegEngine.h",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.h",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\StegEngine.h",
               "RelativeToolTip": "projet avec Alice\\StegEngine.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-14T13:08:52.658Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MainWindow.h",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.h",
-              "RelativeDocumentMoniker": "projet avec Alice\\MainWindow.h",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.h",
-              "RelativeToolTip": "projet avec Alice\\MainWindow.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-14T13:18:49.219Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T13:08:52.658Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
+              "Title": "MainWindow.h",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.h",
+              "RelativeDocumentMoniker": "projet avec Alice\\MainWindow.h",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\MainWindow.h",
+              "RelativeToolTip": "projet avec Alice\\MainWindow.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-14T13:18:49.219Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Dialogs.cpp",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp",
               "RelativeDocumentMoniker": "projet avec Alice\\Dialogs.cpp",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp",
               "RelativeToolTip": "projet avec Alice\\Dialogs.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHsAAAAAAAAAAAAAAIcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:10:48.75Z",
               "EditorCaption": ""
@@ -191,9 +195,9 @@
               "$type": "Document",
               "DocumentIndex": 10,
               "Title": "Dialogs.h",
-              "DocumentMoniker": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.h",
+              "DocumentMoniker": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.h",
               "RelativeDocumentMoniker": "projet avec Alice\\Dialogs.h",
-              "ToolTip": "C:\\Users\\alice\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.h",
+              "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.h",
               "RelativeToolTip": "projet avec Alice\\Dialogs.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
