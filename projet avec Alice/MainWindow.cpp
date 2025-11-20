@@ -5,7 +5,6 @@
 
 #include <string>
 
-// Données globales
 static LoadedImage gImage;
 static float       gZoomFactor = 1.0f;
 
@@ -13,18 +12,14 @@ static const float ZOOM_STEP = 1.25f;
 static const float ZOOM_MIN = 0.1f;
 static const float ZOOM_MAX = 10.0f;
 
-// Panneau de saisie du message (affiché seulement quand on cache un message)
 static HWND gMsgPanel = nullptr;
 static HWND gMsgEdit = nullptr;
 static HWND gMsgOk = nullptr;
 static HWND gMsgCancel = nullptr;
 
-// Hauteur du panneau
 static const int MSG_PANEL_HEIGHT = 140;
 
-// ---------------------------------------------------------
-// Utilitaires de conversion UTF-16 <-> UTF-8
-// ---------------------------------------------------------
+
 static std::string WStringToUTF8(const std::wstring& ws)
 {
     if (ws.empty()) return {};
@@ -54,10 +49,6 @@ static std::wstring UTF8ToWString(const std::string& s)
     return result;
 }
 
-// ---------------------------------------------------------
-// Calcule la zone où l’image doit être dessinée
-// (respect du ratio + zoom + panel optionnel en bas).
-// ---------------------------------------------------------
 static bool GetImageDrawRect(HWND hwnd, RECT& outRect)
 {
     if (gImage.width <= 0 || gImage.height <= 0)
@@ -66,7 +57,6 @@ static bool GetImageDrawRect(HWND hwnd, RECT& outRect)
     RECT rcClient{};
     GetClientRect(hwnd, &rcClient);
 
-    // Zone utilisée par l'image (si le panneau est visible, on le laisse en bas).
     RECT rcImgArea = rcClient;
 
     if (gMsgPanel && IsWindowVisible(gMsgPanel))
@@ -95,9 +85,6 @@ static bool GetImageDrawRect(HWND hwnd, RECT& outRect)
     return true;
 }
 
-// ---------------------------------------------------------
-// Zoom
-// ---------------------------------------------------------
 static void ZoomIn(HWND hwnd)
 {
     gZoomFactor *= ZOOM_STEP;
@@ -118,9 +105,6 @@ static void ZoomReset(HWND hwnd)
     InvalidateRect(hwnd, nullptr, TRUE);
 }
 
-// ---------------------------------------------------------
-// Comparaison de deux images + création d'image de différence
-// ---------------------------------------------------------
 static void CompareImagesAndDiff(const LoadedImage& imgA, const LoadedImage& imgB, HWND hwnd)
 {
     if (imgA.width != imgB.width || imgA.height != imgB.height)
@@ -161,7 +145,6 @@ static void CompareImagesAndDiff(const LoadedImage& imgA, const LoadedImage& img
         pixelsDiff, channelsDiff);
     MessageBox(hwnd, buffer, L"Comparaison d'images", MB_OK | MB_ICONINFORMATION);
 
-    // Image de différence rouge/noir
     LoadedImage diff;
     diff.width = imgA.width;
     diff.height = imgA.height;
@@ -193,7 +176,6 @@ static void CompareImagesAndDiff(const LoadedImage& imgA, const LoadedImage& img
         }
     }
 
-    // Sauvegarde de l'image de différence
     OPENFILENAME ofn{};
     wchar_t fileName[MAX_PATH] = {};
 
@@ -214,9 +196,6 @@ static void CompareImagesAndDiff(const LoadedImage& imgA, const LoadedImage& img
     }
 }
 
-// ---------------------------------------------------------
-// Affichage / masquage du panneau de message
-// ---------------------------------------------------------
 static void ShowMessagePanel(HWND hwnd, bool show)
 {
     if (!gMsgPanel)
@@ -233,9 +212,6 @@ static void ShowMessagePanel(HWND hwnd, bool show)
     InvalidateRect(hwnd, nullptr, TRUE);
 }
 
-// ---------------------------------------------------------
-// Procédure de la fenêtre principale
-// ---------------------------------------------------------
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -248,7 +224,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         int width = rc.right - rc.left;
         int height = rc.bottom - rc.top;
 
-        // Création du panneau de message (invisible au départ)
         gMsgPanel = CreateWindowEx(
             0,
             L"STATIC",
@@ -264,7 +239,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             nullptr
         );
 
-        // Couleur grise de fond
         SendMessage(gMsgPanel, WM_SETTEXT, 0, (LPARAM)L"");
 
         gMsgEdit = CreateWindowEx(
@@ -310,7 +284,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             nullptr
         );
 
-        // Masquer au départ
         ShowMessagePanel(hwnd, false);
     }
     return 0;
@@ -321,22 +294,13 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         int height = HIWORD(lParam);
 
         if (gMsgPanel)
-        {
             MoveWindow(gMsgPanel, 0, height - MSG_PANEL_HEIGHT, width, MSG_PANEL_HEIGHT, TRUE);
-        }
         if (gMsgEdit)
-        {
             MoveWindow(gMsgEdit, 10, height - MSG_PANEL_HEIGHT + 10, width - 20, MSG_PANEL_HEIGHT - 50, TRUE);
-        }
         if (gMsgOk)
-        {
             MoveWindow(gMsgOk, 10, height - 35, 140, 25, TRUE);
-        }
         if (gMsgCancel)
-        {
             MoveWindow(gMsgCancel, 160, height - 35, 80, 25, TRUE);
-        }
-
         InvalidateRect(hwnd, nullptr, TRUE);
     }
     return 0;
@@ -345,7 +309,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     {
         const int id = LOWORD(wParam);
 
-        // Boutons du panneau
         if (id == ID_MSG_OK)
         {
             if (gImage.pixels.empty())
@@ -364,7 +327,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             std::wstring ws;
             ws.resize(len + 1);
             GetWindowTextW(gMsgEdit, &ws[0], len + 1);
-            ws.resize(len); // enlever le '\0'
+            ws.resize(len);
 
             std::string msg = WStringToUTF8(ws);
 
@@ -385,7 +348,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             return 0;
         }
 
-        // Menus
         switch (id)
         {
         case ID_FILE_OPEN:
@@ -460,7 +422,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             }
             else
             {
-                // Afficher le panneau de saisie
                 SetWindowTextW(gMsgEdit, L"");
                 ShowMessagePanel(hwnd, true);
             }
@@ -489,7 +450,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 
         case ID_STEG_COMPARE:
         {
-            // --- Image A ---
             OPENFILENAME ofnA{};
             wchar_t fileA[MAX_PATH] = {};
             ofnA.lStructSize = sizeof(ofnA);
@@ -505,7 +465,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             if (!GetOpenFileName(&ofnA))
                 return 0;
 
-            // --- Image B ---
             OPENFILENAME ofnB{};
             wchar_t fileB[MAX_PATH] = {};
             ofnB.lStructSize = sizeof(ofnB);
@@ -521,7 +480,6 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             if (!GetOpenFileName(&ofnB))
                 return 0;
 
-            // --- Charger ---
             LoadedImage imgA, imgB;
             if (!LoadImageAny(ofnA.lpstrFile, imgA) ||
                 !LoadImageAny(ofnB.lpstrFile, imgB))

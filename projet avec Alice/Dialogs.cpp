@@ -1,18 +1,12 @@
 #include "Dialogs.h"
 #include <string>
 
-// ===============================================================
-//  TEMPLATE DE DIALOG GÉNÉRÉ EN MÉMOIRE
-//  (permet DialogBoxIndirectParam sans fichier .rc)
-// ===============================================================
 static DLGTEMPLATE* CreateDialogTemplate(int w, int h)
 {
-    // Allouer 4 Ko pour le DLGTEMPLATE + structures
     DLGTEMPLATE* dlg = (DLGTEMPLATE*)LocalAlloc(LPTR, 4096);
 
-    // Vérifier que LocalAlloc n'a pas échoué
     if (!dlg)
-        return NULL;  // renvoyer NULL, le code appelant gérera
+        return NULL;
 
     ZeroMemory(dlg, 4096);
 
@@ -24,9 +18,6 @@ static DLGTEMPLATE* CreateDialogTemplate(int w, int h)
 }
 
 
-// ===============================================================
-//  DIALOG : SAISIR UN TEXTE À CACHER
-// ===============================================================
 static INT_PTR CALLBACK AskTextProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static std::string* pOut = nullptr;
@@ -106,9 +97,6 @@ bool Dialog_AskText(HWND parent, std::string& outText)
     return (result == 1);
 }
 
-// ===============================================================
-//  DIALOG : AFFICHER LE MESSAGE EXTRAIT
-// ===============================================================
 static INT_PTR CALLBACK ShowMsgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)

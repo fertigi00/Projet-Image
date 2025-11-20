@@ -2,7 +2,6 @@
 
 #include <windows.h>
 
-// Menu
 enum MenuIds
 {
     ID_FILE_OPEN = 1001,
@@ -18,7 +17,6 @@ enum MenuIds
     ID_VIEW_ZOOM_RESET = 1203
 };
 
-// Contrôles internes pour le panneau de message
 enum ControlIds
 {
     ID_MSG_PANEL = 2001,

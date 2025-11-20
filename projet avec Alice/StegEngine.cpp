@@ -53,19 +53,16 @@ bool Steg::EmbedLSB(LoadedImage& img, const std::string& message)
 
     std::vector<uint8_t> payload;
 
-    // MAGIC
     payload.push_back((MAGIC >> 24) & 0xFFu);
     payload.push_back((MAGIC >> 16) & 0xFFu);
     payload.push_back((MAGIC >> 8) & 0xFFu);
     payload.push_back(MAGIC & 0xFFu);
 
-    // LENGTH
     payload.push_back((length >> 24) & 0xFFu);
     payload.push_back((length >> 16) & 0xFFu);
     payload.push_back((length >> 8) & 0xFFu);
     payload.push_back(length & 0xFFu);
 
-    // MESSAGE
     for (unsigned char c : message)
         payload.push_back(c);
 
@@ -74,7 +71,7 @@ bool Steg::EmbedLSB(LoadedImage& img, const std::string& message)
 
     size_t totalBits = bits.size();
     size_t totalPixels = static_cast<size_t>(img.width) * img.height;
-    size_t capacity = totalPixels * 3u; // B, G, R
+    size_t capacity = totalPixels * 3u;
 
     if (totalBits > capacity)
         return false;
