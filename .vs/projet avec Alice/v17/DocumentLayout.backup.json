@@ -67,8 +67,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:19:29.12Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -88,8 +87,7 @@
               "RelativeToolTip": "projet avec Alice\\RendererGDIPlus.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-19T18:42:26.719Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-19T18:42:26.719Z"
             },
             {
               "$type": "Document",
@@ -125,8 +123,7 @@
               "RelativeToolTip": "projet avec Alice\\MainWindow.cpp",
               "ViewState": "AgIAAEACAAAAAAAAAAAAABcCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-14T13:18:56.662Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T13:18:56.662Z"
             },
             {
               "$type": "Document",
@@ -138,8 +135,7 @@
               "RelativeToolTip": "projet avec Alice\\ImageManager.cpp",
               "ViewState": "AgIAACoAAAAAAAAAAAAAAD8AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-14T13:02:25.41Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T13:02:25.41Z"
             },
             {
               "$type": "Document",
@@ -151,8 +147,7 @@
               "RelativeToolTip": "projet avec Alice\\StegEngine.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-14T13:09:01.776Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T13:09:01.776Z"
             },
             {
               "$type": "Document",
@@ -186,7 +181,7 @@
               "RelativeDocumentMoniker": "projet avec Alice\\Dialogs.cpp",
               "ToolTip": "C:\\Users\\aniezgodzki\\source\\repos\\Projet-Image\\projet avec Alice\\Dialogs.cpp",
               "RelativeToolTip": "projet avec Alice\\Dialogs.cpp",
-              "ViewState": "AgIAAHsAAAAAAAAAAAAAAIcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAI0AAAAAAAAAAAAAAIcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-14T13:10:48.75Z",
               "EditorCaption": ""
